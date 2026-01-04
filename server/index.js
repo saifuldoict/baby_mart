@@ -1,0 +1,19 @@
+import express from 'express'
+import dotenv from 'dotenv'
+
+
+// load env server
+dotenv.config();
+const app = express()
+const PORT = process.env.PORT || 5000
+
+app.get('/', (req, res) => {
+  res.send('Hello from baby mart server!')
+})
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+  console.log(`Client URL: ${process.env.CLIENT_URL}`);
+  console.log(`ADMIN_URL:${process.env.ADMIN_URL}`);
+  console.log(`API docs available at http://localhost:${PORT}/api/docs`)
+});
