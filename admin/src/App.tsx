@@ -1,12 +1,15 @@
 
+import { Button } from "./components/ui/button"
+import Layout from "./components/ui/shared/Layout"
+
 
 function App() {
 
 
   return (
-    <div className="mt-10 p-20">
-      <h1 className="font-bold ">hello admin</h1>
-    </div>
+    <Layout>
+       <Button>Hello</Button>
+    </Layout>
   )
 }
 
