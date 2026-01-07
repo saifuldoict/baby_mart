@@ -17,7 +17,7 @@ import { Link, useNavigate } from "react-router"
 import { Button } from "@/components/ui/button"
 import {LogIn} from "lucide-react"
 
-const Login = () => {
+const RegisterPage = () => {
   const form = useForm({
     defaultValues: {
       email: "",
@@ -44,10 +44,10 @@ const Login = () => {
              transition={{duration:0.3}}
             >
               <CardTitle className="text-3xl font-bold text-gray-800">
-                Admin Dashboard
+                Create an Account
               </CardTitle>
               <CardDescription className="text-gray-500">
-                Enter your credentials to sign in
+                Enter your details to sign up
               </CardDescription>
             </motion.div>
           </CardHeader>
@@ -59,6 +59,14 @@ const Login = () => {
                     name="email"
                     render={({ field }) => (
                       <FormItem className="flex flex-col">
+                        <FormLabel className="text-sm font-medium text-gray-700">Name</FormLabel>
+                            <FormControl>
+                              <Input className=""
+                                type="email"
+                                placeholder="Enter your email"
+                                disabled={loading}
+                                {...field}/>
+                            </FormControl>
                         <FormLabel className="text-sm font-medium text-gray-700">Email</FormLabel>
                             <FormControl>
                               <Input className=""
@@ -81,18 +89,19 @@ const Login = () => {
             )}
           />
           <Button className="w-full bg-indigo-600 hover:bg-indigo-700 hoverEffect">
-            <LogIn/> Sign In
+            <LogIn/> Sign Up
           </Button>
                </form>
             </Form>
           </CardContent>
           <CardFooter className="justify-center ">
-            <p className="text-sm text-gray-500 ">Don't have an account <span className="text-red-500 pl-8 hover:text-indigo-500 hover:underline"><Link to={'/register'}>Sign Up</Link></span> </p>
+            <p className="text-sm text-gray-500 ">Already have an account <span className="text-red-500 pl-8 hover:text-indigo-500 hover:underline"><Link to={'/login'}>Sign In</Link></span> </p>
           </CardFooter>
         </Card>
       </motion.div>
     </div>
   )
+  
 }
 
-export default Login
+export default RegisterPage

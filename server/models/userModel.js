@@ -11,7 +11,9 @@ const userSchema = mongoose.Schema({
     email: {
         type: String,
         required: true,
-        unique: true
+        unique: true,
+        lowercase: true,
+        trim: true,
     },
     password: {
         type: String,
@@ -23,31 +25,16 @@ const userSchema = mongoose.Schema({
     },
     role: {
         type: String,
-        enam: ["admin","user","deliveryman"],
+        enum: ["admin", "user", "deliveryman"],
         default: "user",
     },
     addresses: [
         {
-            street: {
-                type: String,
-                required: true,
-            },
-            city: {
-                type: String,
-                required: true,
-            },
-            country: {
-                type: String,
-                required: true,
-            },
-             postalCode: {
-                type: String,
-                required: true,
-            },
-            isDefault: {
-                type: Boolean,
-                default: false 
-            },
+            street: { type: String, required: true },
+            city: { type: String, required: true },
+            country: { type: String, required: true },
+            postalCode: { type: String, required: true },
+            isDefault: { type: Boolean, default: false },
         },
     ],
     wishlist: [],
@@ -59,18 +46,19 @@ const userSchema = mongoose.Schema({
 // Match user entered password to hashed password in database
 
 userSchema.methods.matchPassword = async function (enteredPassword) {
-    return await bcrypt.compare(enteredPassword, this.password)
-}
+    return await bcrypt.compare(enteredPassword, this.password);
+};
 
-// Encrypt password using bcrypt js
-userSchema.pre("save", async function (next) { 
-    if(!this.isModified("password")) {  // পাসওয়ার্ড মডিফাইড আছে কিনা চেক করতে হবে। পাসওয়াড যদি মডিফাইড না হয় তবে next এ চলে যাবে
-        next()
+// 🔐 Hash password before save
+userSchema.pre("save", async function (next) {
+    if (!this.isModified("password")) {
+        return next();
     }
+
     const salt = await bcrypt.genSalt(10);
-    this.password =await bcrypt.hash(this.password, salt)
-    
-})
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+});
 
 
 // Ensure only address is default
