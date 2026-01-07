@@ -15,18 +15,33 @@ import { useForm } from "react-hook-form"
 import { useState } from "react"
 import { Link, useNavigate } from "react-router"
 import { Button } from "@/components/ui/button"
-import {LogIn} from "lucide-react"
+import {UserPlus} from "lucide-react"
+import {z} from "zod"
+import {  registerSchema } from "@/lib/validation"
+import { zodResolver } from '@hookform/resolvers/zod';
+
+type FormData =z.infer<typeof registerSchema>
 
 const RegisterPage = () => {
-  const form = useForm({
-    defaultValues: {
-      email: "",
-    },
-  })
+  const form = useForm<FormData>({
+      resolver:zodResolver(registerSchema),
+      defaultValues:{
+        name:"",
+        email: "",
+        password: "",
+        role: "user"
+      },
+    })
   const [loading, setLoading]= useState(false)
   const navigate = useNavigate();
-  const onSubmit =()=>{
-    
+
+  const onSubmit = async(data:FormData)=>{
+      setLoading(true)
+      try {
+        
+      } catch (error) {
+        console.log('Failed to register', error)
+      }
   }
   return (
     <div className="min-h-screen w-full flex justify-center items-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
@@ -53,45 +68,92 @@ const RegisterPage = () => {
           </CardHeader>
           <CardContent >
             <Form   {...form}>
-               <form  onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                 <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel className="text-sm font-medium text-gray-700">Name</FormLabel>
-                            <FormControl>
-                              <Input className=""
-                                type="email"
-                                placeholder="Enter your email"
-                                disabled={loading}
-                                {...field}/>
-                            </FormControl>
-                        <FormLabel className="text-sm font-medium text-gray-700">Email</FormLabel>
-                            <FormControl>
-                              <Input className=""
-                                type="email"
-                                placeholder="Enter your email"
-                                disabled={loading}
-                                {...field}/>
-                            </FormControl>
-                            <FormLabel className="text-sm font-medium text-gray-700">Password</FormLabel>
-                            <FormControl>
-                              <Input className=""
-                                type="password"
-                                placeholder="Enter your password"
-                                disabled={loading}
-                                {...field}/>
-                            </FormControl>
-                      
-                        <FormMessage className="text-red-500 text-sm"/>
-             </FormItem>
-            )}
+               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+
+  {/* Name */}
+  <FormField
+    control={form.control}
+    name="name"
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>Name</FormLabel>
+        <FormControl>
+          <Input 
+          type="text"
+          placeholder="John Doe" 
+          disabled={loading} {...field} />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+
+  {/* Email */}
+  <FormField
+    control={form.control}
+    name="email"
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>Email</FormLabel>
+        <FormControl>
+          <Input
+            type="email"
+            placeholder="Enter your email"
+            disabled={loading}
+            {...field}
           />
-          <Button className="w-full bg-indigo-600 hover:bg-indigo-700 hoverEffect">
-            <LogIn/> Sign Up
-          </Button>
-               </form>
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+
+  {/* Password */}
+  <FormField
+    control={form.control}
+    name="password"
+    render={({ field }) => (
+      <FormItem>
+        <FormLabel>Password</FormLabel>
+        <FormControl>
+          <Input
+            type="password"
+            placeholder="Enter your password"
+            disabled={loading}
+            {...field}
+          />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+
+  {/* Role */}
+  <FormField
+    control={form.control}
+    name="role"
+    render={() => (
+      <FormItem>
+        <FormLabel>Role</FormLabel>
+        <FormControl>
+          <Input
+            placeholder="admin / user"
+            disabled={loading}  
+            className=" bg-gray-100 text-gray-500 cursor-not-allowed" 
+          />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    )}
+  />
+
+  <Button className="w-full bg-indigo-600 hover:bg-indigo-700">
+    <UserPlus className="mr-2 h-4 w-4" />
+    Sign Up
+  </Button>
+
+</form>
+
             </Form>
           </CardContent>
           <CardFooter className="justify-center ">

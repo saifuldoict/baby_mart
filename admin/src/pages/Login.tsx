@@ -16,17 +16,26 @@ import { useState } from "react"
 import { Link, useNavigate } from "react-router"
 import { Button } from "@/components/ui/button"
 import {LogIn} from "lucide-react"
+import {z} from "zod"
+import {  loginSchema } from "@/lib/validation"
+import { zodResolver } from '@hookform/resolvers/zod';
+
+type FormData =z.infer<typeof loginSchema>
 
 const Login = () => {
-  const form = useForm({
-    defaultValues: {
+  const form = useForm<FormData>({
+    resolver:zodResolver(loginSchema),
+    defaultValues:{
       email: "",
+      password: ""
     },
   })
+  
   const [loading, setLoading]= useState(false)
   const navigate = useNavigate();
-  const onSubmit =()=>{
-    
+  
+  const onSubmit = async(data:FormData)=>{
+    console.log(data)
   }
   return (
     <div className="min-h-screen w-full flex justify-center items-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
@@ -51,41 +60,63 @@ const Login = () => {
               </CardDescription>
             </motion.div>
           </CardHeader>
-          <CardContent >
-            <Form   {...form}>
-               <form  onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                 <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem className="flex flex-col">
-                        <FormLabel className="text-sm font-medium text-gray-700">Email</FormLabel>
-                            <FormControl>
-                              <Input className=""
-                                type="email"
-                                placeholder="Enter your email"
-                                disabled={loading}
-                                {...field}/>
-                            </FormControl>
-                            <FormLabel className="text-sm font-medium text-gray-700">Password</FormLabel>
-                            <FormControl>
-                              <Input className=""
-                                type="password"
-                                placeholder="Enter your password"
-                                disabled={loading}
-                                {...field}/>
-                            </FormControl>
-                      
-                        <FormMessage className="text-red-500 text-sm"/>
-             </FormItem>
-            )}
-          />
-          <Button className="w-full bg-indigo-600 hover:bg-indigo-700 hoverEffect">
-            <LogIn/> Sign In
-          </Button>
-               </form>
-            </Form>
-          </CardContent>
+          <CardContent>
+  <Form {...form}>
+    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+
+      {/* Email */}
+      <FormField
+        control={form.control}
+        name="email"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Email</FormLabel>
+            <FormControl>
+              <Input
+                type="email"
+                placeholder="Enter your email"
+                disabled={loading}
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      {/* Password */}
+      <FormField
+        control={form.control}
+        name="password"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Password</FormLabel>
+            <FormControl>
+              <Input
+                type="password"
+                placeholder="Enter your password"
+                disabled={loading}
+                {...field}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      <Button
+        type="submit"
+        disabled={loading}
+        className="w-full bg-indigo-600 hover:bg-indigo-700"
+      >
+        <LogIn className="mr-2 h-4 w-4" />
+        Sign In
+      </Button>
+
+    </form>
+  </Form>
+</CardContent>
+
           <CardFooter className="justify-center ">
             <p className="text-sm text-gray-500 ">Don't have an account <span className="text-red-500 pl-8 hover:text-indigo-500 hover:underline"><Link to={'/register'}>Sign Up</Link></span> </p>
           </CardFooter>
