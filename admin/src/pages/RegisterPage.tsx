@@ -19,6 +19,7 @@ import {UserPlus} from "lucide-react"
 import {z} from "zod"
 import {  registerSchema } from "@/lib/validation"
 import { zodResolver } from '@hookform/resolvers/zod';
+import useAuthStore from "@/store/useAuthStore"
 
 type FormData =z.infer<typeof registerSchema>
 
@@ -34,11 +35,13 @@ const RegisterPage = () => {
     })
   const [loading, setLoading]= useState(false)
   const navigate = useNavigate();
-
+  const {register}= useAuthStore()  // useAuthStore থেকে রেজিস্টার ফাংশন কে আনা হলো
   const onSubmit = async(data:FormData)=>{
       setLoading(true)
       try {
-        
+        await register(data) // এখানে রেজিস্টার কে সেট করা হলো যার মাধ্যমে ব্যাকইন্ড এ ডাটা পাঠানো সম্ভব হবে। onSubmit এর প্যারামিটার হিসাবে যা পাওয়া যাবে তাই এখানে সেট করা হলো (data) নামে
+        console.log("Register successfull")
+        navigate("/login")
       } catch (error) {
         console.log('Failed to register', error)
       }

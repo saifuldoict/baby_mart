@@ -2,6 +2,7 @@ import express from 'express';
 import 'dotenv/config';
 import router from './routes/authRoutes.js';
 import connectDB from './config/db.js';
+import cors from 'cors'
 
 // load env server
 const app = express();
@@ -12,8 +13,28 @@ const PORT = process.env.PORT || 8000;
 connectDB();
 
 // CORS configuration
+const allowedOrigins = [
+  process.env.ADMIN_URL,
+  process.env.CLIENT_URL,
+].filter(Boolean);
 
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // allow requests with no origin (Postman, mobile apps)
+      if (!origin) return callback(null, true);
 
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+    credentials: true, // IMPORTANT if using cookies or auth headers
+  })
+);
 // Increase body size limit for JSON and URL-encoded payloads
 app.use(express.json());
 
