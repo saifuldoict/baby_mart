@@ -19,6 +19,7 @@ import {LogIn} from "lucide-react"
 import {z} from "zod"
 import {  loginSchema } from "@/lib/validation"
 import { zodResolver } from '@hookform/resolvers/zod';
+import useAuthStore from "@/store/useAuthStore"
 
 type FormData =z.infer<typeof loginSchema>
 
@@ -32,10 +33,19 @@ const Login = () => {
   })
   
   const [loading, setLoading]= useState(false)
+  const {login}=useAuthStore();
   const navigate = useNavigate();
   
   const onSubmit = async(data:FormData)=>{
-    console.log(data)
+    setLoading(true)
+   try {
+    await login(data);
+    navigate("/dashboard")
+   } catch (error) {
+     console.error("Failed to Login user", error)
+   } finally{
+    setLoading(false)
+   }
   }
   return (
     <div className="min-h-screen w-full flex justify-center items-center bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500">
@@ -107,6 +117,7 @@ const Login = () => {
       <Button
         type="submit"
         disabled={loading}
+       
         className="w-full bg-indigo-600 hover:bg-indigo-700"
       >
         <LogIn className="mr-2 h-4 w-4" />
