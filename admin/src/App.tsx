@@ -10,7 +10,7 @@ import { useState } from 'react';
 
 
 function App() {
-const [sidebarOpen, setSidebarOpen]= useState(true)
+const [sidebarOpen, setSidebarOpen]= useState(false)
  const {isAuthenticated}= useAuthStore();
     if(!isAuthenticated){
         return <Navigate to={"/login"}/>
@@ -19,7 +19,7 @@ const [sidebarOpen, setSidebarOpen]= useState(true)
 
       <div className='h-screen flex bg-background'>
         <Sidebar open={sidebarOpen} setOpen={setSidebarOpen}/>
-        <div className={cn("flex flex-col flex-1 max-w-[--breakpoint-2xl] hoverEffect ml-64")}>
+        <div className={cn("flex flex-col flex-1 max-w-[--breakpoint-2xl] hoverEffect", sidebarOpen?"ml-64":"ml-20")}>
 
           <Header/>
           <main>

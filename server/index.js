@@ -1,8 +1,10 @@
 import express from 'express';
 import 'dotenv/config';
-import router from './routes/authRoutes.js';
 import connectDB from './config/db.js';
 import cors from 'cors'
+import router from './routes/authRoutes.js';
+import userRoutes from './routes/userRoutes.js';
+
 
 // load env server
 const app = express();
@@ -41,7 +43,7 @@ app.use(express.json());
 
 //Route
 app.use("/api/auth",router)
-
+app.use("/api/users",userRoutes)
 
 
 //Home ROute
