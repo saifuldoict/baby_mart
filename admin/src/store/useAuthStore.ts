@@ -29,7 +29,7 @@ type AuthStore ={
      logout: () => void;
 
      checkIsAdmin: ()=>boolean;
-
+   
 }
 
 const useAuthStore = create<AuthStore>()(

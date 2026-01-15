@@ -10,7 +10,7 @@ import { useState } from 'react';
 
 
 function App() {
-const [sidebarOpen, setSidebarOpen]= useState(false)
+const [sidebarOpen, setSidebarOpen]= useState(true)
  const {isAuthenticated}= useAuthStore();
     if(!isAuthenticated){
         return <Navigate to={"/login"}/>
