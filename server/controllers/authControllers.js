@@ -20,7 +20,7 @@ export const registerUser = asyncHandler(async(req,res)=>{
         email:user.email,
         avatar: user.avatar,
         role: user.role,
-        addresses: user.addresses,
+        addresses: user.addresses | [],
     });
    } else{
     res.status(400);

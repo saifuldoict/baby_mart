@@ -8,12 +8,16 @@ import {UserType} from "../../type"
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import { motion } from "motion/react"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Form, FormControl, FormField, FormItem, FormLabel } from '@/components/ui/form';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import z from 'zod';
 import { userSchema } from '@/lib/validation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Select, SelectContent, SelectItem, SelectTrigger } from '@/components/ui/select';
+import { SelectValue } from '@radix-ui/react-select';
+import { ImageUpload } from '@/components/ui/imageUpload';
+
 
 type FormData = z.infer<typeof userSchema> //userSchema কে লিংক করা হলো
 
@@ -45,7 +49,7 @@ const UsersPage = () => {
 // form এর সাথে FormData কানেক্ট করা হলো
  const formAdd=useForm<FormData>({
   resolver:zodResolver(userSchema),
-  defaultValues:{
+  defaultValues:{  // এভাবে দিলে প্রত্যেকের জন্য আলাদা করো স্টেট ডিকলার করতে হবে না।
     name:"",
     email:"",
     password:"",
@@ -183,21 +187,85 @@ const UsersPage = () => {
            </Table>
         </div>
         {/* Add User Modal */}
-        <Dialog open={issAddModalOpen} onOpenChange={setIsAddModalOpen}>
-                  <DialogContent className='sm:max-w-[550px] max-h-[90vh] overflow-auto'>
+        <Dialog open={issAddModalOpen} onOpenChange={setIsAddModalOpen}> 
+                  <DialogContent className='sm:max-w-137.5 max-h-[90vh] overflow-auto'>
                      <DialogHeader>
                         <DialogTitle>Add User</DialogTitle>
                         <DialogDescription>Create a new user account</DialogDescription>
                      </DialogHeader>
                      <Form {...formAdd}>
-                         <form className='mt-4 space-y-6'>
-                             <FormField control={formAdd.control} name="name" render={({field})=>(<FormItem>
-                                <FormLabel>Name</FormLabel>
+                      
+                         <form className='mt-4 space-y-6'> 
+                          {/*Name Field*/}
+                             <FormField control={formAdd.control} name="name" render={({field})=>(<FormItem> {/*render ফরম এর একটা মেথড*/ }
+                                <FormLabel className='text-gray-700 font-medium'>Name</FormLabel>
                                 <FormControl>
-                                  <input type='text'{...field} disabled={formLoading} className='focus:border-indigo-500 hoverEffect' placeholder='Enter your name here'/>
+                                      <input type="text"{...field} disabled={formLoading} placeholder="Enter your name here"className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-indigo-500 hover:border-indigo-400 disabled:cursor-not-allowed disabled:bg-gray-100"/>
                                 </FormControl>
+                                <FormMessage className='text-red-500 text-xs'/>
                              </FormItem>)}/>
+
+                             {/*Email Field*/}
+                             <FormField control={formAdd.control} name="email" render={({field})=>(<FormItem> {/*render ফরম এর একটা মেথড*/ }
+                                <FormLabel className='text-gray-700 font-medium'>Email</FormLabel>
+                                <FormControl>
+                                      <input type="email"{...field} disabled={formLoading} placeholder="Enter your email"className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-indigo-500 hover:border-indigo-400 disabled:cursor-not-allowed disabled:bg-gray-100"/>
+                                </FormControl>
+                                <FormMessage className='text-red-500 text-xs'/>
+                             </FormItem>)}/>
+
+                               {/*Password Field*/}
+                             <FormField control={formAdd.control} name="password" render={({field})=>(<FormItem> {/*render ফরম এর একটা মেথড*/ }
+                                <FormLabel className='text-gray-700 font-medium'>Password</FormLabel>
+                                <FormControl>
+                                      <input type="password"{...field} disabled={formLoading} placeholder="Enter your password"className="border border-gray-300 rounded-md px-3 py-2 focus:outline-none focus:border-indigo-500 hover:border-indigo-400 disabled:cursor-not-allowed disabled:bg-gray-100"/>
+                                </FormControl>
+                                <FormMessage className='text-red-500 text-xs'/>
+                             </FormItem>)}/>
+
+                              {/*Role Field*/}
+                             <FormField control={formAdd.control} name="role" render={({field})=>(<FormItem> {/*render ফরম এর একটা মেথড*/ }
+                                <FormLabel className='text-gray-700 font-medium'>Role</FormLabel>
+                                    <Select onValueChange={field.onChange}defaultValue={field.value} disabled= {formLoading}>
+                                      <FormControl>
+                                        <SelectTrigger className='border-gray-300 rounded-lg focus:border-indigo-500 transition-all duration-200 w-full'>
+                                              <SelectValue placeholder="Select a role"/>
+                                        </SelectTrigger>
+                                      </FormControl>
+                                          <SelectContent className='w-full'>
+                                              <SelectItem value='user'>User</SelectItem>
+                                              <SelectItem value='admin'>Admin</SelectItem>
+                                              <SelectItem value='deliveryman'>Deliveryman</SelectItem>
+                                          </SelectContent>
+                                    </Select>
+                                      <FormMessage className='text-red-500 text-xs'/>
+                             </FormItem>)}/>
+
+                              {/*Avater field*/}
+                              <FormField control={formAdd.control} name="avater" render={({field})=>(
+                                <FormItem>
+                                   <FormLabel className='text-gray-700 font-medium'>Avater</FormLabel>
+                                   <FormControl>
+                                      <ImageUpload value={field.value ?? ""} onChange={field.onChange} disabled={formLoading}/>
+                                   </FormControl>
+                                         <FormMessage className='text-red-500 text-xs'/>
+                                </FormItem>
+                              )}>
+                              </FormField>
                          </form>
+                         {/*Buttons*/}
+                         <DialogFooter>
+                            <Button
+                            type='button'
+                            variant={"outline"}
+                            onClick={()=>setIsAddModalOpen(false)}
+                            disabled={formLoading}
+                            className='border-gray-300 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors duration-200'
+                            >Cancel</Button>
+                            <Button>
+                              Creat User
+                            </Button>
+                         </DialogFooter>
                      </Form>
                   </DialogContent>
         </Dialog>
